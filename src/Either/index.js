@@ -3,8 +3,15 @@
  */
 export const Right = v => {
   return {
+    /**
+     *  Either.map :: (a -> b) -> Either(b)
+     */
     map: fn => Right(fn(v)),
-    fold: (_f, g) => g(v)
+    fold: (_f, g) => g(v),
+    /**
+     *  Either.chain :: (a -> Either(b)) -> Either(b)
+     */
+    chain: fn => fn(v)
   };
 };
 
@@ -14,7 +21,8 @@ export const Right = v => {
 export const Left = v => {
   return {
     map: () => Left(v),
-    fold: fn => fn(v)
+    fold: fn => fn(v),
+    chain: v => v
   };
 };
 
@@ -22,3 +30,17 @@ export const Left = v => {
  *  fromNullable :: a -> Either(a)
  */
 export const fromNullable = x => (x != null ? Right(x) : Left(null));
+
+export const tryCatch = fn => {
+  let result;
+
+  try {
+    const s = fn();
+
+    result = Right(s);
+  } catch (e) {
+    result = Left(e);
+  }
+
+  return result;
+};

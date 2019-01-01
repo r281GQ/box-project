@@ -1,16 +1,16 @@
-import { fromNullable } from "./Either";
+import { tryCatch } from "./Either";
+import fs from "fs";
 
-const COLORS = {
-  red: "#ff4444",
-  blue: "#3b55998",
-  yellow: "#fff68f"
-};
+const readFile = path => () => fs.readFileSync(path);
 
-/**
- *  findColor :: Color -> String -> Either
- */
-const findColor = color => name => fromNullable(color[name]);
+const parse = file => () => JSON.parse(file);
 
-findColor(COLORS)("red")
-  .map(x => x.toUpperCase())
-  .fold(x => console.log("errored " + x), y => console.log("success " + y));
+tryCatch(readFile("./config.json"))
+  .chain(x => tryCatch(parse(x)))
+  .fold(
+    e => {
+      console.log("error");
+      console.log(e);
+    },
+    result => console.log(result)
+  );
