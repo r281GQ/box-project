@@ -5,12 +5,8 @@ const readFile = path => () => fs.readFileSync(path);
 
 const parse = file => () => JSON.parse(file);
 
-tryCatch(readFile("./config.json"))
+const result = tryCatch(readFile("./config.json"))
   .chain(x => tryCatch(parse(x)))
-  .fold(
-    e => {
-      console.log("error");
-      console.log(e);
-    },
-    result => console.log(result)
-  );
+  .fold(e => "aint the case", result => result);
+
+console.log(result);

@@ -22,7 +22,7 @@ export const Left = v => {
   return {
     map: () => Left(v),
     fold: fn => fn(v),
-    chain: v => v
+    chain: () => Left(v)
   };
 };
 
