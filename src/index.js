@@ -1,9 +1,23 @@
 import Box from "./Box";
 
-const priceToDouble = x => x * 0.1;
-
 const identity = x => x;
 
-const price = Box.of(43);
+const moneyToFloat = str =>
+  Box(str)
+    .map(s => s.replace(/\$/g, ""))
+    .map(s => parseFloat(s));
 
-console.log(price.map(priceToDouble).fold(identity));
+const percentToFloat = str =>
+  Box(str)
+    .map(s => s.replace(/\%/g, ""))
+    .map(s => parseFloat(s))
+    .map(s => s * 0.01);
+
+const applyDiscount = (money, discount) =>
+  moneyToFloat(money)
+    .map(value => value - percentToFloat(discount).fold(identity) * value)
+    .fold(identity);
+
+const result = applyDiscount("$4.99", "20%");
+
+console.log(result);
