@@ -1,23 +1,16 @@
-import Box from "./Box";
+import { fromNullable } from "./Either";
 
-const identity = x => x;
+const COLORS = {
+  red: "#ff4444",
+  blue: "#3b55998",
+  yellow: "#fff68f"
+};
 
-const moneyToFloat = str =>
-  Box(str)
-    .map(s => s.replace(/\$/g, ""))
-    .map(s => parseFloat(s));
+/**
+ *  findColor :: Color -> String -> Either
+ */
+const findColor = color => name => fromNullable(color[name]);
 
-const percentToFloat = str =>
-  Box(str)
-    .map(s => s.replace(/\%/g, ""))
-    .map(s => parseFloat(s))
-    .map(s => s * 0.01);
-
-const applyDiscount = (money, discount) =>
-  moneyToFloat(money)
-    .map(value => value - percentToFloat(discount).fold(identity) * value)
-    .fold(identity);
-
-const result = applyDiscount("$4.99", "20%");
-
-console.log(result);
+findColor(COLORS)("red")
+  .map(x => x.toUpperCase())
+  .fold(x => console.log("errored " + x), y => console.log("success " + y));
